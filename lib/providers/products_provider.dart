@@ -37,10 +37,15 @@ class ProductsProvider with ChangeNotifier {
     ),
   ];
 
+//getter
 List<Product> get products{
   return [..._products];
 }
-
+//founder 
+Product findById(String id){
+  return _products.firstWhere((product) => product.id == id);
+}
+//adding method
 void addProduct(){
   // _products.add(value);
   notifyListeners();

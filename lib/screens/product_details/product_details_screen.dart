@@ -10,7 +10,7 @@ class ProductDetailsScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text(product.title),
       ),
-      body: Center(child:Text('Product details')),
+      body: Center(child: Text('Product details')),
     );
   }
 }
