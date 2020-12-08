@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../models/product.dart';
+import 'product.dart';
 
 class ProductsProvider with ChangeNotifier {
   List<Product> _products = [
@@ -50,4 +50,5 @@ void addProduct(){
   // _products.add(value);
   notifyListeners();
 }
+//toggling favourite
 }
