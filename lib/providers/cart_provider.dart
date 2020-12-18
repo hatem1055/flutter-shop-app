@@ -36,13 +36,7 @@ class CartProvider with ChangeNotifier {
     String title,
   ) {
     if (_items.containsKey(productId)) {
-      _items.update(
-          productId,
-          (value) => CartItem(
-              id: value.id,
-              price: value.price,
-              quantity: value.quantity + 1,
-              title: value.title));
+      _items.removeWhere((key, value) => key == productId);
     } else {
       _items.putIfAbsent(
           productId,
