@@ -3,14 +3,10 @@ import 'package:flutter/cupertino.dart';
 class CartItem {
   final String id;
   final String title;
-  final int quantity;
+  int quantity = 1;
   final double price;
 
-  CartItem(
-      {@required this.id,
-      @required this.price,
-      @required this.quantity,
-      @required this.title});
+  CartItem({@required this.id, @required this.price, @required this.title});
 }
 
 class CartProvider with ChangeNotifier {
@@ -20,15 +16,18 @@ class CartProvider with ChangeNotifier {
     return {..._items};
   }
 
-  int get itemCount{
+  int get itemCount {
     return _items.length;
   }
-  bool isInCart(id){
+
+  bool isInCart(id) {
     return _items.containsKey(id);
   }
-  int getProductQuanitiy(id){
+
+  int getProductQuanitiy(id) {
     return _items[id].quantity;
   }
+
   //methods
   void addItem(
     String productId,
@@ -41,12 +40,34 @@ class CartProvider with ChangeNotifier {
       _items.putIfAbsent(
           productId,
           () => CartItem(
-              id: DateTime.now().toString(),
-              price: price,
-              quantity: 1,
-              title: title));
+              id: DateTime.now().toString(), price: price, title: title));
     }
     notifyListeners();
   }
 
+  void deleteItems(id) {
+    _items.remove(id);
+    notifyListeners();
+  }
+
+  void incrementItemQuantity(id) {
+    _items[id].quantity += 1;
+    notifyListeners();
+  }
+
+  void dicrementItemQuantity(id) {
+    if(_items[id].quantity > 1){
+      _items[id].quantity -= 1;
+    }
+    notifyListeners();
+  }
+
+  //calculations
+  double get totalAmount {
+    double sum = 0.0;
+    _items.forEach((key, cartItem) {
+      sum += cartItem.price * cartItem.quantity;
+    });
+    return sum;
+  }
 }

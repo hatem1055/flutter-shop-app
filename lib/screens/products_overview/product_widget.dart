@@ -8,7 +8,6 @@ class ProductWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Product product = Provider.of<Product>(context);
-    final CartProvider cart = Provider.of<CartProvider>(context, listen: false);
     //methods
     void navigateToDetails(ctx) {
       Navigator.of(ctx)
