@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../providers/cart_provider.dart';
 import '../product_details/product_details_screen.dart';
-
 import '../../providers/product.dart';
+import 'badge_widget.dart';
 
 class ProductWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final Product product = Provider.of<Product>(context, listen: false);
+    final Product product = Provider.of<Product>(context);
+    final CartProvider cart = Provider.of<CartProvider>(context, listen: false);
     //methods
     void navigateToDetails(ctx) {
       Navigator.of(ctx)
@@ -38,11 +40,30 @@ class ProductWidget extends StatelessWidget {
                     },
                     color: Theme.of(context).accentColor,
                   )),
-          trailing: IconButton(
-            icon: Icon(Icons.shopping_cart),
-            onPressed: () {},
-            color: Theme.of(context).accentColor,
-          ),
+          trailing: cart.isInCart(product.id)
+              ? Consumer<CartProvider>(
+                  child: IconButton(
+                    icon: Icon(Icons.shopping_cart),
+                    color: Theme.of(context).accentColor,
+                    onPressed: () {
+                      cart.addItem(product.id, product.price, product.title);
+                    },
+                  ),
+                  builder: (_, cart, child) {
+                    return Badge(
+                      child: child,
+                      value: cart.getProductQuanitiy(product.id).toString(),
+                      color: Colors.white,
+                    );
+                  },
+                )
+              : IconButton(
+                  icon: Icon(Icons.shopping_cart_outlined),
+                  onPressed: () {
+                    cart.addItem(product.id, product.price, product.title);
+                  },
+                  color: Theme.of(context).accentColor,
+                ),
           title: Text(
             product.title,
             textAlign: TextAlign.center,
