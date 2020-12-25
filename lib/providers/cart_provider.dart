@@ -47,7 +47,7 @@ class CartProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void deleteItems(id) {
+  void deleteItem(id) {
     _items.remove(id);
     notifyListeners();
   }
@@ -63,7 +63,10 @@ class CartProvider with ChangeNotifier {
     }
     notifyListeners();
   }
-
+  void clearCart(){
+    _items = {};
+    notifyListeners();
+  }
   //calculations
   double get totalAmount {
     double sum = 0.0;

@@ -13,7 +13,7 @@ class CartItemWidget extends StatelessWidget {
       key: ValueKey(cartItem.id),
       direction: DismissDirection.endToStart,
       onDismissed: (dir) => {
-        Provider.of<CartProvider>(context, listen: false).deleteItems(productId)
+        Provider.of<CartProvider>(context, listen: false).deleteItem(productId)
       },
       background: Container(
         margin: EdgeInsets.symmetric(horizontal: 15, vertical: 4),
