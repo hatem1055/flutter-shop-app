@@ -5,8 +5,9 @@ class CartItem {
   final String title;
   int quantity = 1;
   final double price;
+  final String imageUrl;
 
-  CartItem({@required this.id, @required this.price, @required this.title});
+  CartItem({@required this.id, @required this.price, @required this.title,@required this.imageUrl});
 }
 
 class CartProvider with ChangeNotifier {
@@ -33,6 +34,7 @@ class CartProvider with ChangeNotifier {
     String productId,
     double price,
     String title,
+    String imageUrl
   ) {
     if (_items.containsKey(productId)) {
       _items.removeWhere((key, value) => key == productId);
@@ -40,7 +42,7 @@ class CartProvider with ChangeNotifier {
       _items.putIfAbsent(
           productId,
           () => CartItem(
-              id: DateTime.now().toString(), price: price, title: title));
+              id: DateTime.now().toString(), price: price, title: title,imageUrl:imageUrl));
     }
     notifyListeners();
   }
