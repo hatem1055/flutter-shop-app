@@ -4,6 +4,7 @@ import 'products_grid.dart';
 import 'badge_widget.dart';
 import '../../providers/cart_provider.dart';
 import '../cart/cart_screen.dart';
+import '../drawer/drawer.dart';
 
 enum FilterOptions { Favourits, All }
 
@@ -17,6 +18,7 @@ class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        drawer:MyDrawer(),
         appBar: AppBar(
           title: Text('Products'),
           actions: [
