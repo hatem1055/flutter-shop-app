@@ -14,6 +14,20 @@ class ProductWidget extends StatelessWidget {
           .pushNamed(ProductDetailsScreen.routeName, arguments: product);
     }
 
+    void startSnackBar(String text, Function onPressed) {
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(text),
+        action: SnackBarAction(
+          label: 'UNDO',
+          onPressed: () {
+            onPressed(
+                product.id, product.price, product.title, product.imageUrl);
+          },
+        ),
+      ));
+    }
+
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
       child: GridTile(
@@ -45,7 +59,13 @@ class ProductWidget extends StatelessWidget {
                     ? Icon(Icons.shopping_cart)
                     : Icon(Icons.shopping_cart_outlined),
                 onPressed: () {
-                  cart.addItem(product.id, product.price, product.title,product.imageUrl);
+                  cart.addItem(product.id, product.price, product.title,
+                      product.imageUrl);
+                      if(cart.isInCart(product.id)){
+                        startSnackBar('Added to the cart', cart.addItem);
+                      }else{
+                        startSnackBar('Removed from cart', cart.addItem);
+                      }
                 },
                 color: Theme.of(context).accentColor,
               );
