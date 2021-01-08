@@ -16,7 +16,7 @@ class CartItemWidget extends StatelessWidget {
         Provider.of<CartProvider>(context, listen: false).deleteItem(productId)
       },
       confirmDismiss: (_) {
-        // confirm dissmis must return future bool and showdialog 
+        // confirm dissmis must return future bool and showdialog
         // return future with the value passed to navigator.pop
         return showDialog(
             context: context,
@@ -56,14 +56,8 @@ class CartItemWidget extends StatelessWidget {
           child: Padding(
             padding: EdgeInsets.all(5),
             child: ListTile(
-              leading: Container(
-                width: 60,
-                height: 60,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  image: DecorationImage(
-                      image: NetworkImage(cartItem.imageUrl), fit: BoxFit.fill),
-                ),
+              leading: CircleAvatar(
+                backgroundImage: NetworkImage(cartItem.imageUrl),
               ),
               title: Text(cartItem.title),
               subtitle: Text(

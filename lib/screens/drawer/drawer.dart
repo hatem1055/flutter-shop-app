@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../orders/orders_screen.dart';
-
+import '../user_products/user_products_screen.dart';
 class MyDrawer extends StatelessWidget {
   Widget drawerItem(BuildContext context,String title, IconData icon,String route) {
     return ListTile(
@@ -30,7 +30,9 @@ class MyDrawer extends StatelessWidget {
           ),
           drawerItem(context,'Shop', Icons.shop,'/'),
           Divider(),
-          drawerItem(context,'Orders', Icons.credit_card,OrdersScreen.routeName)
+          drawerItem(context,'Orders', Icons.credit_card,OrdersScreen.routeName),
+          Divider(),
+          drawerItem(context, 'Manage products', Icons.edit, UserProductsScreen.route)
         ],
       ),
     );
