@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../../providers/product.dart';
-
 class UserProductItem extends StatelessWidget {
   final Product product;
 
