@@ -103,10 +103,10 @@ class _EditAddProductScreenState extends State<EditAddProductScreen> {
             width: double.infinity,
             child: RaisedButton(
                 onPressed: () {},
-                child: Text('submit',style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w400
-                ),),
+                child: Text(
+                  'submit',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),
+                ),
                 color: Theme.of(context).primaryColor,
                 textColor: Colors.white,
                 shape: RoundedRectangleBorder(
