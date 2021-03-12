@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import '../../providers/cart_provider.dart';
 import '../../providers/orders_provider.dart';
-void placeOrder(BuildContext context,CartProvider cart,OrdersProvider orders) {
+
+void placeOrder(
+    BuildContext context, CartProvider cart, OrdersProvider orders) {
   showDialog(
       context: context,
       builder: (_) {
@@ -9,20 +11,28 @@ void placeOrder(BuildContext context,CartProvider cart,OrdersProvider orders) {
           title: Text(
               'are you sure you want to place this order and clear the cart'),
           actions: [
-            FlatButton(
+            TextButton(
                 onPressed: () {
                   orders.addOrder(cart.items.values.toList(), cart.totalAmount);
                   cart.clearCart();
                   Navigator.of(context).pop();
                 },
-                color: Theme.of(context).primaryColor,
-                textColor: Colors.white,
+                style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(
+                      Theme.of(context).primaryColor,
+                    ),
+                    foregroundColor: MaterialStateProperty.all<Color>(
+                      Colors.white,
+                    )),
                 child: Text('yes,Iam sure')),
-            FlatButton(
+            TextButton(
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                textColor: Theme.of(context).errorColor,
+                style: ButtonStyle(
+                    foregroundColor: MaterialStateProperty.all<Color>(
+                  Theme.of(context).errorColor,
+                )),
                 child: Text('cancel'))
           ],
         );

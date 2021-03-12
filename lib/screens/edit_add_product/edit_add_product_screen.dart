@@ -38,7 +38,7 @@ class _EditAddProductScreenState extends State<EditAddProductScreen> {
 
   void saveForm() {
     final isValid = form.currentState.validate();
-    if (isValid == null) {
+    if (!isValid) {
       return;
     }
     form.currentState.save();
@@ -91,12 +91,12 @@ class _EditAddProductScreenState extends State<EditAddProductScreen> {
                         id: editedProduct.id,
                         title: editedProduct.title,
                         description: editedProduct.description,
-                        price: double.parse(val),
+                        price: double.tryParse(val),
                         imageUrl: editedProduct.imageUrl);
                   },
                   validator: (value) {
                     if (value.isEmpty) {
-                      return 'please provide a vlue';
+                      return 'please provide a value';
                     }
                     if (double.tryParse(value) == null) {
                       return 'please enter a valid number';
@@ -187,18 +187,21 @@ class _EditAddProductScreenState extends State<EditAddProductScreen> {
               Container(
                 margin: inputsMargin,
                 width: double.infinity,
-                child: RaisedButton(
+                child: ElevatedButton(
                     onPressed: saveForm,
                     child: Text(
                       'submit',
                       style:
                           TextStyle(fontSize: 18, fontWeight: FontWeight.w400),
                     ),
-                    color: Theme.of(context).primaryColor,
-                    textColor: Colors.white,
-                    shape: RoundedRectangleBorder(
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(Theme.of(context).primaryColor),
+                      shape: MaterialStateProperty.all<OutlinedBorder>(RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(25),
-                        side: BorderSide(color: Colors.grey))),
+                        side: BorderSide(color: Colors.grey)))
+                    ),
+                    // shape: 
+                      ),
               )
             ]),
           )),

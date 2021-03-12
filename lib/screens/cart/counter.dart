@@ -17,7 +17,7 @@ class CounterWidget extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         if (quantity > 1)
-          FlatButton(
+          TextButton(
             child: Text(
               '-',
               style: textStyle,
@@ -25,15 +25,18 @@ class CounterWidget extends StatelessWidget {
             onPressed: () {
               cart.dicrementItemQuantity(productId);
             },
-            minWidth: 20,
+            style: ButtonStyle(
+                minimumSize:
+                    MaterialStateProperty.all<Size>(Size.fromWidth(30))),
           ),
         Text('$quantity x'),
-        FlatButton(
+        TextButton(
           child: Text('+', style: textStyle),
           onPressed: () {
             cart.incrementItemQuantity(productId);
           },
-          minWidth: 20,
+          style: ButtonStyle(
+              minimumSize: MaterialStateProperty.all<Size>(Size.fromWidth(30))),
         ),
       ],
     );
