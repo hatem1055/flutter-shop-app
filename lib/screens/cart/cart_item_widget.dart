@@ -16,8 +16,8 @@ class CartItemWidget extends StatelessWidget {
         Provider.of<CartProvider>(context, listen: false).deleteItem(productId)
       },
       confirmDismiss: (_) {
-        // confirm dissmis must return future bool and showdialog
-        // return future with the value passed to navigator.pop
+        /* confirm dissmis must return future bool,showdialog
+        return future with the value passed to navigator.pop */
         return showDialog(
             context: context,
             builder: (ctx) {

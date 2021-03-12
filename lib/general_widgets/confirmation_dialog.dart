@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
-import '../../providers/cart_provider.dart';
-import '../../providers/orders_provider.dart';
 
-void placeOrder(
-    BuildContext context, CartProvider cart, OrdersProvider orders) {
+void showConfirmationDialog(
+    {@required BuildContext context,
+    @required String message,
+    @required Function confirmFunction,
+    @required Function dismissFunction}) {
   showDialog(
       context: context,
       builder: (_) {
         return AlertDialog(
-          title: Text(
-              'are you sure you want to place this order and clear the cart'),
+          title: Text(message),
           actions: [
             TextButton(
                 onPressed: () {
-                  orders.addOrder(cart.items.values.toList(), cart.totalAmount);
-                  cart.clearCart();
+                  confirmFunction();
                   Navigator.of(context).pop();
                 },
                 style: ButtonStyle(
@@ -27,6 +26,7 @@ void placeOrder(
                 child: Text('yes,Iam sure')),
             TextButton(
                 onPressed: () {
+                  dismissFunction();
                   Navigator.of(context).pop();
                 },
                 style: ButtonStyle(

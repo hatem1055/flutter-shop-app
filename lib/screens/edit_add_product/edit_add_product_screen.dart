@@ -3,6 +3,28 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../../providers/product.dart';
 import '../../providers/products_provider.dart';
+
+class LocalControllers {
+  final imageUrlController = TextEditingController();
+  final titleController = TextEditingController();
+  final priceController = TextEditingController();
+  final descriptionController = TextEditingController();
+
+  void controllersDispose() {
+    imageUrlController.dispose();
+    titleController.dispose();
+    priceController.dispose();
+    descriptionController.dispose();
+  }
+
+  void setControllersValues(Product product) {
+    imageUrlController.text = product.imageUrl;
+    descriptionController.text = product.description;
+    priceController.text = product.price.toString();
+    titleController.text = product.title;
+  }
+}
+
 class EditAddProductScreen extends StatefulWidget {
   static const route = '/editAddProduct';
   @override
@@ -10,12 +32,14 @@ class EditAddProductScreen extends StatefulWidget {
 }
 
 class _EditAddProductScreenState extends State<EditAddProductScreen> {
-  final imageUrlController = TextEditingController();
+  final controllers = LocalControllers();
   final imageUrlFocusNode = FocusNode();
   final inputsMargin = const EdgeInsets.symmetric(vertical: 15, horizontal: 10);
   final form = GlobalKey<FormState>();
   var editedProduct =
       Product(id: null, title: '', description: '', price: 0, imageUrl: '');
+  var isinit = true;
+
   @override
   void initState() {
     imageUrlFocusNode.addListener(updateUrl);
@@ -24,7 +48,7 @@ class _EditAddProductScreenState extends State<EditAddProductScreen> {
 
   @override
   void dispose() {
-    imageUrlController.dispose();
+    controllers.controllersDispose();
     imageUrlFocusNode.removeListener(updateUrl);
     imageUrlFocusNode.dispose();
     super.dispose();
@@ -36,13 +60,25 @@ class _EditAddProductScreenState extends State<EditAddProductScreen> {
     }
   }
 
+  @override
+  void didChangeDependencies() {
+    if (isinit) {
+      final oldProduct = ModalRoute.of(context).settings.arguments as Product;
+      editedProduct = oldProduct == null ? editedProduct : oldProduct;
+      controllers.setControllersValues(editedProduct);
+    }
+    isinit = false;
+    super.didChangeDependencies();
+  }
+
   void saveForm() {
     final isValid = form.currentState.validate();
     if (!isValid) {
       return;
     }
     form.currentState.save();
-    Provider.of<ProductsProvider>(context,listen: false).addProduct(editedProduct);
+    Provider.of<ProductsProvider>(context, listen: false)
+        .editAddProduct(editedProduct);
     Navigator.of(context).pop();
   }
 
@@ -54,6 +90,12 @@ class _EditAddProductScreenState extends State<EditAddProductScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Edit Product'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.save),
+            onPressed: saveForm,
+          )
+        ],
       ),
       body: Form(
           key: form,
@@ -63,6 +105,7 @@ class _EditAddProductScreenState extends State<EditAddProductScreen> {
                 margin: inputsMargin,
                 child: TextFormField(
                   decoration: singleLineInputStyle('Title'),
+                  controller: controllers.titleController,
                   textInputAction: TextInputAction.next,
                   validator: (value) {
                     if (value.isEmpty) {
@@ -76,7 +119,8 @@ class _EditAddProductScreenState extends State<EditAddProductScreen> {
                         title: val,
                         description: editedProduct.description,
                         price: editedProduct.price,
-                        imageUrl: editedProduct.imageUrl);
+                        imageUrl: editedProduct.imageUrl,
+                        isFavourite: editedProduct.isFavourite,);
                   },
                 ),
               ),
@@ -84,6 +128,7 @@ class _EditAddProductScreenState extends State<EditAddProductScreen> {
                 margin: inputsMargin,
                 child: TextFormField(
                   decoration: singleLineInputStyle('Price'),
+                  controller: controllers.priceController,
                   keyboardType: TextInputType.number,
                   textInputAction: TextInputAction.next,
                   onSaved: (val) {
@@ -92,7 +137,8 @@ class _EditAddProductScreenState extends State<EditAddProductScreen> {
                         title: editedProduct.title,
                         description: editedProduct.description,
                         price: double.tryParse(val),
-                        imageUrl: editedProduct.imageUrl);
+                        imageUrl: editedProduct.imageUrl,
+                        isFavourite: editedProduct.isFavourite,);
                   },
                   validator: (value) {
                     if (value.isEmpty) {
@@ -118,18 +164,18 @@ class _EditAddProductScreenState extends State<EditAddProductScreen> {
                     margin: EdgeInsets.only(top: 8, right: 5),
                     decoration: BoxDecoration(
                         border: Border.all(width: 1, color: Colors.grey)),
-                    child: imageUrlController.text.isEmpty
+                    child: controllers.imageUrlController.text.isEmpty
                         ? Text('Enter a URL')
                         : FittedBox(
                             child: Image.network(
-                            imageUrlController.text,
+                            controllers.imageUrlController.text,
                             fit: BoxFit.cover,
                           )),
                   ),
                   Expanded(
                     child: TextFormField(
                       decoration: singleLineInputStyle('Image URL'),
-                      controller: imageUrlController,
+                      controller: controllers.imageUrlController,
                       keyboardType: TextInputType.url,
                       textInputAction: TextInputAction.next,
                       focusNode: imageUrlFocusNode,
@@ -141,7 +187,7 @@ class _EditAddProductScreenState extends State<EditAddProductScreen> {
                           return 'please provide a vlue';
                         }
 
-                        if(!Uri.parse(value).isAbsolute){
+                        if (!Uri.parse(value).isAbsolute) {
                           return 'please enter valid url';
                         }
                         return null;
@@ -152,6 +198,7 @@ class _EditAddProductScreenState extends State<EditAddProductScreen> {
                             title: editedProduct.title,
                             description: editedProduct.description,
                             price: editedProduct.price,
+                            isFavourite: editedProduct.isFavourite,
                             imageUrl: val);
                       },
                     ),
@@ -162,6 +209,7 @@ class _EditAddProductScreenState extends State<EditAddProductScreen> {
                 margin: inputsMargin,
                 child: TextFormField(
                   decoration: singleLineInputStyle('Description'),
+                  controller: controllers.descriptionController,
                   maxLines: 3,
                   keyboardType: TextInputType.multiline,
                   onFieldSubmitted: (_) => saveForm(),
@@ -171,7 +219,8 @@ class _EditAddProductScreenState extends State<EditAddProductScreen> {
                         title: editedProduct.title,
                         description: val,
                         price: editedProduct.price,
-                        imageUrl: editedProduct.imageUrl);
+                        imageUrl: editedProduct.imageUrl,
+                        isFavourite: editedProduct.isFavourite,);
                   },
                   validator: (value) {
                     if (value.isEmpty) {
@@ -188,20 +237,20 @@ class _EditAddProductScreenState extends State<EditAddProductScreen> {
                 margin: inputsMargin,
                 width: double.infinity,
                 child: ElevatedButton(
-                    onPressed: saveForm,
-                    child: Text(
-                      'submit',
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.w400),
-                    ),
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all<Color>(Theme.of(context).primaryColor),
-                      shape: MaterialStateProperty.all<OutlinedBorder>(RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(25),
-                        side: BorderSide(color: Colors.grey)))
-                    ),
-                    // shape: 
-                      ),
+                  onPressed: saveForm,
+                  child: Text(
+                    'submit',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),
+                  ),
+                  style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(
+                          Theme.of(context).primaryColor),
+                      shape: MaterialStateProperty.all<OutlinedBorder>(
+                          RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(25),
+                              side: BorderSide(color: Colors.grey)))),
+                  // shape:
+                ),
               )
             ]),
           )),

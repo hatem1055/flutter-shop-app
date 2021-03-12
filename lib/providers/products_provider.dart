@@ -40,18 +40,39 @@ class ProductsProvider with ChangeNotifier {
 List<Product> get products{
   return [..._products];
 }
+
 List<Product> get favouriteProducts{
   return _products.where((product) => product.isFavourite).toList();
 }
-//founder 
+
 Product findById(String id){
   return _products.firstWhere((product) => product.id == id);
 }
-//adding method
+
+
 void addProduct(Product product){
   final newProduct = Product(id: DateTime.now().toString(), title: product.title, description: product.description, price: product.price, imageUrl: product.imageUrl);
   _products.add(newProduct);
+}
+
+void editProduct(String id,Product editedProduct){
+  int prodIndex = _products.indexWhere((element) => element.id == id);
+  _products[prodIndex] = editedProduct;
+}
+
+void editAddProduct(Product product){
+  //because if it's new product the id sent will be null
+  if(product.id == null){
+    addProduct(product);
+  }
+  else{
+    editProduct(product.id, product);
+  }
   notifyListeners();
 }
-//toggling favourite
+
+void deleteProduct(String id){
+  _products.removeWhere((element) => element.id == id);
+  notifyListeners();
+}
 }

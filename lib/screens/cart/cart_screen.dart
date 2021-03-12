@@ -3,8 +3,8 @@ import 'package:provider/provider.dart';
 import '../../providers/orders_provider.dart';
 import '../../providers/cart_provider.dart';
 import 'cart_item_widget.dart';
-import 'place_order.dart';
 import '../drawer/drawer.dart';
+import '../../general_widgets/confirmation_dialog.dart';
 
 class CartScreen extends StatelessWidget {
   static const routeName = '/cart';
@@ -17,7 +17,7 @@ class CartScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text('Cart'),
       ),
-      drawer:MyDrawer(),
+      drawer: MyDrawer(),
       body: Column(
         children: [
           Card(
@@ -45,11 +45,20 @@ class CartScreen extends StatelessWidget {
                     TextButton(
                       child: Text('Order Now'),
                       onPressed: () {
-                        placeOrder(context,cart,orders);
+                        showConfirmationDialog(
+                            context: context,
+                            confirmFunction: () {
+                              orders.addOrder(
+                                  cart.items.values.toList(), cart.totalAmount);
+                              cart.clearCart();
+                            },
+                            dismissFunction: (){},
+                            message: 'are you sure you want to place this order and clear the cart'
+                          );
                       },
                       style: ButtonStyle(
-                        foregroundColor: MaterialStateProperty.all<Color>(Theme.of(context).primaryColor)
-                      ),
+                          foregroundColor: MaterialStateProperty.all<Color>(
+                              Theme.of(context).primaryColor)),
                     )
                   ],
                 )),
